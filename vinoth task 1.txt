@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JavaScript Quiz</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 1em;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border: none;
+      border-radius: 5px;
+      background-color: #e0e0e0;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .options button:hover {
+      background-color: #ccc;
+    }
+
+    .correct {
+      background-color: #a5d6a7 !important;
+      color: white;
+    }
+
+    .wrong {
+      background-color: #ef9a9a !important;
+      color: white;
+    }
+
+    #next-btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #score-section {
+      display: none;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>JavaScript Quiz</h2>
+    <div id="quiz">
+      <div id="question" class="question">Loading...</div>
+      <div id="options" class="options"></div>
+      <button id="next-btn">Next</button>
+    </div>
+    <div id="score-section">
+      <p>You scored <span id="score"></span> out of <span id="total"></span>.</p>
+      <button onclick="location.reload()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Which language runs in a web browser?",
+        options: ["Java", "C", "Python", "JavaScript"],
+        answer: "JavaScript"
+      },
+      {
+        question: "What does CSS stand for?",
+        options: ["Central Style Sheets", "Cascading Style Sheets", "Coded Style Sheets", "Creative Style Sheets"],
+        answer: "Cascading Style Sheets"
+      },
+      {
+        question: "What year was JavaScript created?",
+        options: ["1995", "2000", "1989", "1991"],
+        answer: "1995"
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreSection = document.getElementById("score-section");
+    const scoreDisplay = document.getElementById("score");
+    const totalDisplay = document.getElementById("total");
+
+    function loadQuestion() {
+      const current = questions[currentQuestionIndex];
+      questionEl.textContent = current.question;
+      optionsEl.innerHTML = "";
+
+      current.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => selectOption(btn, current.answer);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function selectOption(selectedBtn, correctAnswer) {
+      const allButtons = optionsEl.querySelectorAll("button");
+      allButtons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === correctAnswer) {
+          btn.classList.add("correct");
+        } else {
+          btn.classList.add("wrong");
+        }
+      });
+
+      if (selectedBtn.textContent === correctAnswer) {
+        score++;
+      }
+    }
+
+    nextBtn.onclick = () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    };
+
+    function showScore() {
+      document.getElementById("quiz").style.display = "none";
+      scoreSection.style.display = "block";
+      scoreDisplay.textContent = score;
+      totalDisplay.textContent = questions.length;
+    }
+
+    // Start the quiz
+    loadQuestion();
+  </script>
+
+</body>
+</html>
